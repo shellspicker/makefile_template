@@ -57,17 +57,17 @@ cleanall: clean
 %.d: %.c
 	@set -e
 	@rm -f $@
-	@$(CC) -MM $< | awk '{print "$@ " $$0}' > $@
+	@$(CC) -MM $< | awk '{print "$@", $$0}' > $@
 
 %.d: %.cpp
 	@set -e
 	@rm -f $@
-	@$(CXX) -MM $< | awk '{print "$@ " $$0}' > $@
+	@$(CXX) -MM $< | awk '{print "$@", $$0}' > $@
 
 # 以下是生成.d文件的4种方法.
 # 形如%.d %.o: %.c something.h...
 # 生成.d的原因是.h里面增加或减少包含其他.h文件, .d也能同步更新.
-#@$(CC) -MM $< | awk '{print "$@ " $$0}' > $@
+#@$(CC) -MM $< | awk '{print "$@", $$0}' > $@
 #@$(CC) -MM $< | awk '{printf "%s %s\n", "$@", $$0}' > $@
 #@$(CC) -MM $< | sed 's:^\(.*\):$@ \1:g' > $@
 #@$(CC) -MM $(CPPFLAGS) $< > $@.$$$$; \
