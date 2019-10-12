@@ -1,0 +1,102 @@
+a := qqq
+b := www
+c := eee
+d := rrr
+
+names := a b c d
+suf := .cpp
+filename := xxx.cpp
+
+define fun
+	$(eval str := 666)
+	@echo "before undefine: $(str)"
+endef
+
+#	echo jojo
+# above will cause error "recipe before rules. stop."
+
+# in define, set var, value of var must sure(defined).
+# this func must call with eval, otherwise is unuseful.
+# random value define with ?= can be sure only one possible, even multi eval,
+# but if define with other symbol like =, eval once will perm one random value.
+define func_defvar
+	rnd_inside ?= $(shell mktemp -u XXX)
+endef
+
+# call this func with eval, cause double eval.
+define func_eval_defvar
+	$(eval $(call func_defvar))
+endef
+
+# outside var is different with inside define var, only use := can be sure
+# there is only one call the var get value func(random).
+rnd_outside := $(shell mktemp -u XXX)
+rnd2_outside = $(rnd_outside)
+
+# must eval.
+# set varname = value.
+define func_set_var
+$(1) := $(2)
+endef
+
+define func_call_set_var_and_prt
+	$(eval $(call func_set_var, $(1), $(2)))
+	@echo "$(1) set value is $(2)"
+endef
+
+define func_ifdef_var
+	ifndef $(1)
+		$(2) := ddd
+	else
+		$(2) := mmm
+	endif
+endef
+
+default: all
+
+test_def_var:
+	$(eval $(call func_set_var, dsm, yyy))
+	$(eval $(call func_ifdef_var, dsm, zgh))
+	@echo "zgh is $(zgh)"
+
+test_func_set_var:
+	$(call func_call_set_var_and_prt, zgh, 666)
+	@echo "zgh is $(zgh)"
+
+test_rnd_outside:
+	@echo "rnd = $(rnd_outside)"
+	@echo "rnd = $(rnd_outside)"
+	@echo "rnd2 = $(rnd2_outside)"
+	@echo "rnd2 = $(rnd2_outside)"
+
+test_rnd_inside:
+	$(call func_eval_defvar)
+	@echo "rnd = $(rnd_inside)"
+	@echo "rnd = $(rnd_inside)"
+
+# doueble eval will cause double define var.
+test_double_eval: test_rnd_inside
+	$(eval $(call func_eval_defvar))
+	@echo "rnd = $(rnd_inside)"
+	@echo "rnd = $(rnd_inside)"
+
+test_foreach_eval:
+	@echo $(a) $(b) $(c) $(d)
+	$(foreach n,$(names),$(eval $(n) := 233))
+	@echo $(a) $(b) $(c) $(d)
+
+test_subst_with_var:
+	@echo $(filename:$(suf)=.o)
+
+test_call_func:
+	$(call fun)
+	@echo "out func, str = $(str)"
+	$(eval undefine str)
+	@echo "after undefine: $(str)"
+
+test_make_sub_notpass_var:
+	make test_double_eval
+	@echo "rnd = $(rnd_inside)"
+
+all: test_make_sub_notpass_var
+	@echo $$
