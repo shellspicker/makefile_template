@@ -52,6 +52,25 @@ define func_ifdef_var
 	endif
 endef
 
+define eval_origin_symbol
+	var = 233
+	cpvar = $$(var)
+endef
+
+# $(1) is a suffixname, we want to dim a var with $(suffixname).
+# sample: a outside var id = 1, we pass id in this func,
+# now $(1) is id, and we want $(id) = 1, append it into suffix.
+define double_getarg_to_define_var
+	pre_$($(1)) := 666
+endef
+
+define define_var_and_undefine
+	vara = aaa
+	varb = $(vara)
+	varc = ccc
+	undefine vara
+endef
+
 default: all
 
 test_def_var:
@@ -98,5 +117,18 @@ test_make_sub_notpass_var:
 	make test_double_eval
 	@echo "rnd = $(rnd_inside)"
 
-all: test_make_sub_notpass_var
+test_eval_with_getvalue_symbol_origin_char:
+	$(eval $(call eval_origin_symbol))
+	@echo $(var) $(cpvar)
+
+test_double_point_define_var:
+	$(eval id = 1)
+	$(eval $(call double_getarg_to_define_var,id))
+	@echo "$(pre_1)"
+
+test_define_var_and_undefine:
+	$(eval $(call define_var_and_undefine))
+	@echo "$(vara) $(varb) $(varc)"
+
+all: test_define_var_and_undefine
 	@echo $$
