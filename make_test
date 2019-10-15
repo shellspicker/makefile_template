@@ -17,21 +17,28 @@ endef
 
 # in define, set var, value of var must sure(defined).
 # this func must call with eval, otherwise is unuseful.
-# random value define with ?= can be sure only one possible, even multi eval,
+# random value define with ?= can be sure only one possible, even multi def,
 # but if define with other symbol like =, eval once will perm one random value.
 define func_defvar
-	rnd_inside ?= $(shell mktemp -u XXX)
+rnd_inside ?= $(shell mktemp -u XXX)
 endef
 
 # call this func with eval, cause double eval.
+# use define to def var, eval any time is same, see test_rnd_inside.
+#	$(eval $(call func_defvar))
+#	$(call func_eval_defvar)
+#	$(eval $(call func_eval_defvar))
+# above 3 call is same.
 define func_eval_defvar
 	$(eval $(call func_defvar))
 endef
 
 # outside var is different with inside define var, only use := can be sure
 # there is only one call the var get value func(random).
-rnd_outside := $(shell mktemp -u XXX)
-rnd2_outside = $(rnd_outside)
+rnd_outside = $(shell mktemp -u XXX)
+rnd2_outside ?= $(rnd_outside)
+rnd3_$(rnd_outside) := 233
+rnd4_$(rnd2_outside) := 666
 
 # must eval.
 # set varname = value.
@@ -64,10 +71,10 @@ define double_getarg_to_define_var
 	pre_$($(1)) := 666
 endef
 
+vara = aaa
+varb := $(vara)
+varc = ccc
 define define_var_and_undefine
-	vara = aaa
-	varb = $(vara)
-	varc = ccc
 	undefine vara
 endef
 
@@ -87,15 +94,20 @@ test_rnd_outside:
 	@echo "rnd = $(rnd_outside)"
 	@echo "rnd2 = $(rnd2_outside)"
 	@echo "rnd2 = $(rnd2_outside)"
+	@echo "rnd3 = $(rnd3_$(rnd_outside))"
+	@echo "rnd4 = $(rnd4_$(rnd2_outside))"
 
 test_rnd_inside:
-	$(call func_eval_defvar)
+#	$(eval $(call func_defvar))
+#	$(call func_eval_defvar)
+	$(eval $(call func_eval_defvar))
 	@echo "rnd = $(rnd_inside)"
 	@echo "rnd = $(rnd_inside)"
 
-# doueble eval will cause double define var.
-test_double_eval: test_rnd_inside
+test_double_def: test_rnd_inside
 	$(eval $(call func_eval_defvar))
+	@echo "rnd = $(rnd_inside)"
+	@echo "rnd = $(rnd_inside)"
 	@echo "rnd = $(rnd_inside)"
 	@echo "rnd = $(rnd_inside)"
 
@@ -128,7 +140,9 @@ test_double_point_define_var:
 
 test_define_var_and_undefine:
 	$(eval $(call define_var_and_undefine))
-	@echo "$(vara) $(varb) $(varc)"
+	@echo "vara: $(vara)"
+	@echo "varb: $(varb)"
+	@echo "varc: $(varc)"
 
-all: test_define_var_and_undefine
+all:
 	@echo $$
