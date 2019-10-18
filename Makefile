@@ -73,7 +73,7 @@ cleanall: clean
 define mkdep
 	@set -e
 	@rm -f $(2)
-	@$(3) -MM $(1) | awk '{print "$(2)", $$0}' > $(2)
+	@$(3) -MM -MF $(2) -MT '$(patsubst %.d,%.o,$(2)) $(2)' $(1)
 endef
 %.d: %.c
 	@$(call mkdep,$<,$@,$(CC))
@@ -84,6 +84,7 @@ endef
 # 以下是生成.d文件的4种方法.
 # 形如%.d %.o: %.c something.h...
 # 生成.d的原因是.h里面增加或减少包含其他.h文件, .d也能同步更新.
+#@$(CC) -MM -MF $@ -MT '$(patsubst %.d,%.o,$@) $@' $<
 #@$(CC) -MM $< | awk '{print "$@", $$0}' > $@
 #@$(CC) -MM $< | awk '{printf "%s %s\n", "$@", $$0}' > $@
 #@$(CC) -MM $< | sed 's:^\(.*\):$@ \1:g' > $@
