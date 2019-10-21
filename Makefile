@@ -30,9 +30,9 @@ default: all
 .PHONY: init_all
 ifneq ($(aimid_all),)
     obj_all = $(foreach id,$(aimid_all),$(OBJS_$(id)))
-endif
-ifneq ($(obj_all),)
-    sinclude $(obj_all:.o=.d)
+    ifneq ($(obj_all),)
+        sinclude $(obj_all:.o=.d)
+    endif
 endif
 init_all:
 # 添加需要的目标文件.
