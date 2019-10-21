@@ -33,6 +33,11 @@ define func_eval_defvar
 	$(eval $(call func_defvar))
 endef
 
+define func_define_use_inner_var
+	var1 = 233
+	var2 += $(var1)
+endef
+
 # outside var is different with inside define var, only use := can be sure
 # there is only one call the var get value func(random).
 rnd_outside = $(shell mktemp -u XXX)
@@ -59,11 +64,6 @@ define func_ifdef_var
 	endif
 endef
 
-define eval_origin_symbol
-	var = 233
-	cpvar = $$(var)
-endef
-
 # $(1) is a suffixname, we want to dim a var with $(suffixname).
 # sample: a outside var id = 1, we pass id in this func,
 # now $(1) is id, and we want $(id) = 1, append it into suffix.
@@ -88,6 +88,10 @@ test_def_var:
 test_func_set_var:
 	$(call func_call_set_var_and_prt, zgh, 666)
 	@echo "zgh is $(zgh)"
+
+test_define_use_inner_var:
+	$(eval $(call func_define_use_inner_var))
+	@echo var1: $(var1), var2: $(var2)
 
 test_rnd_outside:
 	@echo "rnd = $(rnd_outside)"
@@ -129,10 +133,6 @@ test_make_sub_notpass_var:
 	make test_double_eval
 	@echo "rnd = $(rnd_inside)"
 
-test_eval_with_getvalue_symbol_origin_char:
-	$(eval $(call eval_origin_symbol))
-	@echo $(var) $(cpvar)
-
 test_double_point_define_var:
 	$(eval id = 1)
 	$(eval $(call double_getarg_to_define_var,id))
@@ -144,5 +144,5 @@ test_define_var_and_undefine:
 	@echo "varb: $(varb)"
 	@echo "varc: $(varc)"
 
-all: test_rnd_outside
+all: test_define_use_inner_var
 	@echo $$
