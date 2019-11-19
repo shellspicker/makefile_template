@@ -23,7 +23,7 @@ MAKEFILE = Makefile
 # 文件扩展名相关.
 SRCEXT = .c .cc .cpp .cxx .c++
 
-# compile recipe.
+# recipe and compile rule.
 # args: (id).
 define recipe
 $(ALL_$(1)): $(REQ_$(1))
@@ -34,9 +34,11 @@ endef
 default: all
 fake_all: $(TARGET)
 
+# 万事具备, 展开所有必要的静态规则.
 ifneq ($(aimid_all),)
-    # 固定格式的编译函数.
+    # 固定格式的编译规则调用.
     $(foreach id,$(aimid_all),$(eval $(call recipe,$(id))))
+	# 自动生成的所有文件对应的头文件依赖.
     obj_all = $(foreach id,$(aimid_all),$(OBJS_$(id)))
     ifneq ($(obj_all),)
         sinclude $(obj_all:.o=.d)
@@ -121,6 +123,7 @@ define init_compiler
 endef
 
 # 按照源文件类型获得后缀和编译器类型.
+# func: get file suffix and compiler type.
 # args: (id).
 define preprocess
 	$(eval $(call init_suffix,$(SRCS_$(1)),SUFFIX_$(1)))
@@ -134,18 +137,17 @@ endef
 define compile_exe
 	$(1) -o $@ $^ $(LIBS) $(LDFLAGS)
 endef
-
 # args: ().
 define compile_static
 	$(AR) crs $@ $^
 	$(RANLIB) $@
 endef
-
 # args: (cc).
 define compile_dynamic
 	$(1) $(SHARE) $@ $^ $(LDFLAGS) $(LIBS)
 endef
 
+# func: dim file info.
 # args: (id, mode, dest, src).
 define dim_file_relevant
 	aimid_all += $(1)
