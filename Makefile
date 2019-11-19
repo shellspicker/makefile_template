@@ -38,7 +38,7 @@ fake_all: $(TARGET)
 ifneq ($(aimid_all),)
     # 固定格式的编译规则调用.
     $(foreach id,$(aimid_all),$(eval $(call recipe,$(id))))
-	# 自动生成的所有文件对应的头文件依赖.
+    # 自动生成的所有文件对应的头文件依赖.
     obj_all = $(foreach id,$(aimid_all),$(OBJS_$(id)))
     ifneq ($(obj_all),)
         sinclude $(obj_all:.o=.d)
