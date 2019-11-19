@@ -62,7 +62,6 @@ init_all:
 		)
 	$(eval export aimid_all TARGET)
 
-
 # 以下一般不需要改
 .PHONY: build rebuild all clean cleanall
 build: all
