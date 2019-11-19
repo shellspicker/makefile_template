@@ -50,9 +50,6 @@ init_all:
 # 固定格式的编译函数.
 $(ALL_1): $(REQ_1)
 	$(call compile_$(MODE_1),$(CC_1))
-$(ALL_2): $(REQ_2)
-	$(call compile_$(MODE_2),$(CC_2))
-# 所有目标合集, 多目标的话把所有需要的都放到这里.
 
 # 以下一般不需要改
 .PHONY: build rebuild all clean cleanall
