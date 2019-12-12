@@ -21,28 +21,30 @@
 #include <linux/dcache.h>
 #include <linux/sched.h>
 #include <linux/kthread.h>
-#include <linux/pit.h>
+#include <linux/pid.h>
 #include <linux/wait.h>
 #include <linux/completion.h>
 #include <linux/irq.h>
 #include <linux/interrupt.h>
 #include <linux/time.h>
 #include <linux/timer.h>
-#include <linux/seamphore.h>
+#include <linux/semaphore.h>
 #include <linux/rwsem.h>
 #include <linux/seqlock.h>
 #include <asm/atomic.h>
+#include <asm-generic/delay.h>
 
-static int __init module_init(void)
+static int __init dsm_module_init(void)
+{
+	return 0;
+}
+
+void __exit dsm_module_exit(void)
 {
 }
 
-void __exit module_exit(void)
-{
-}
-
-module_init(module_init);
-module_exit(module_exit);
+module_init(dsm_module_init);
+module_exit(dsm_module_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("shellspicker@outlook.com");
