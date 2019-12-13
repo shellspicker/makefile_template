@@ -20,6 +20,7 @@
 #include <linux/mount.h>
 #include <linux/dcache.h>
 #include <linux/sched.h>
+#include <linux/delay.h>
 #include <linux/kthread.h>
 #include <linux/pid.h>
 #include <linux/wait.h>
@@ -27,6 +28,7 @@
 #include <linux/irq.h>
 #include <linux/interrupt.h>
 #include <linux/time.h>
+#include <linux/timekeeping.h>
 #include <linux/timer.h>
 #include <linux/semaphore.h>
 #include <linux/rwsem.h>
