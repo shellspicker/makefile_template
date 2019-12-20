@@ -1,6 +1,7 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
+#include <linux/types.h>
 #include <linux/string.h>
 #include <linux/list.h>
 #include <linux/kfifo.h>
@@ -33,8 +34,6 @@
 #include <linux/semaphore.h>
 #include <linux/rwsem.h>
 #include <linux/seqlock.h>
-#include <asm/atomic.h>
-#include <asm-generic/delay.h>
 
 static int __init dsm_module_init(void)
 {
