@@ -4,7 +4,7 @@ CXX = g++
 AR = ar
 RANLIB = ranlib
 SHARE = -fpic -shared -o
-VPATH = ./
+VPATH =
 INCLUDE = -I./\
 	-I/usr/include/\
 	-I/usr/local/include/
@@ -85,7 +85,7 @@ cleanall: clean
 define mkdep
 	@set -e
 	@rm -f $(2)
-	@$(3) -MM -MF $(2) -MT '$(patsubst %.d,%.o,$(2)) $(2)' $(1)
+	@$(3) $(INCLUDE) -MM -MF $(2) -MT '$(patsubst %.d,%.o,$(2)) $(2)' $(1)
 endef
 %.d: %.c
 	@$(call mkdep,$<,$@,$(CC))
@@ -167,13 +167,15 @@ endef
 # call as below.
 #	@$(foreach id,$(aimid_all),$(call debug,$(id)))
 define debug
-	@echo -en "debug begin!!!\n"
-	@echo -en "suffix: $(SUFFIX_$(1))$$\n"
-	@echo -en "cc: $(CC_$(1))$$\n"
-	@echo -en "objs: $(OBJS_$(1))$$\n"
-	@echo -en "all: $(ALL_$(1))$$\n"
-	@echo -en "srcs: $(SRCS_$(1))$$\n"
-	@echo -en "req: $(REQ_$(1))$$\n"
-	@echo -en "mode: $(MODE_$(1))$$\n"
-	@echo -en "debug end!!!\n"
+	@echo ""
+	@echo "debug begin!!!"
+	@echo "suffix: $(SUFFIX_$(1))$$"
+	@echo "cc: $(CC_$(1))$$"
+	@echo "objs: $(OBJS_$(1))$$"
+	@echo "all: $(ALL_$(1))$$"
+	@echo "srcs: $(SRCS_$(1))$$"
+	@echo "req: $(REQ_$(1))$$"
+	@echo "mode: $(MODE_$(1))$$"
+	@echo "debug end!!!"
+	@echo ""
 endef
