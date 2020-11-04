@@ -5,7 +5,7 @@ include mk/recipe.mk
 .PHONY: init_all
 init_all:
 # 添加需要的目标文件.
-# 自定义文件, 支持多个目标, 写好每个目标的信息.
+# 支持多个目标, 写好每个目标的信息.
 # 定义每个目标调用一次dim_file_relevant.
 # example:
 #	$(eval $(call dim_file_relevant,id,mode,target,src))
