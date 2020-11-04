@@ -5,6 +5,7 @@ AR = ar
 RANLIB = ranlib
 SHARE = -fpic -shared -o
 INCLUDE = -I./\
+	-Iinclude/\
 	-I/usr/include/\
 	-I/usr/local/include/
 LIBS = -L./\
